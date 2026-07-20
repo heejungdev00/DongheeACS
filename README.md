@@ -20,21 +20,38 @@
 
 ---
 
-## 🛠 Tech Stack (기술 스택)
+## 🛠 Tech Stack & Architecture
 
-### Backend
-- **Framework**: Python 3.10+, FastAPI
-- **HTTP Client**: `httpx` (비동기 통신)
-- **Server**: Uvicorn
+### 1. Backend & Server Architecture
+* **Core Language**: Python 3.10+
+* **Web Framework**: FastAPI *(비동기 ASGI 기반 high-performance API 서버 구축)*
+* **ASGI Server**: Uvicorn
+* **Asynchronous I/O & HTTP**: `httpx` *(ANT 서버와의 비동기 HTTP/REST API 연동)*
+* **Real-time Communication**: WebSocket (`ws_manager.py`) *(실시간 상태 및 로그 스트리밍)*
+* **Industrial Protocol**: Modbus/TCP (`modbus_poller.py`) *(PLC 설비 상태 및 비트 신호 폴링)*
+* **Data Storage & Cache**: SQLite / File-based DB (`db.py`) *(이벤트 로그 및 미션 모니터링 이력 저장)*
 
-### Frontend
-- **Framework**: React.js
-- **Visualization**: HTML5 SVG, React Hooks (`useCallback`, `useRef`)
-- **HTTP Client**: Fetch API
+### 2. Frontend & Visualization
+* **Core Library**: React.js
+* **2D Rendering Engine**: HTML5 Native SVG Canvas *(차량 폼 팩터 `body.shape` 다각형 연산 및 회전 렌더링)*
+* **State & Lifecycle Management**: React Hooks (`useState`, `useEffect`, `useCallback`, `useRef`)
+* **Responsive Layout**: `ResizeObserver API` *(브라우저 창 크기에 맞춘 SVG 맵 스케일링)*
+* **API Client**: Fetch API / Custom Async Client
+
+### 3. Build, Packaging & System Integration
+* **Desktop Packaging**: PyInstaller (`ANT_Interface_System.spec`) *(단일 실행 파일 `.exe` 패키징)*
+* **Automation Script**: Bash Shell Script (`build.sh`)
+* **Configuration Management**: YAML (`config.yaml`) *(서버 포트, ANT API URL, Modbus 레지스터 매핑 설정)*
+
+### 4. Protocol & Documentation
+* **Sequence & Ladder**: PLC Ladder Diagram, Sequence Flow (*PLC_Middleware_ANT_Ladder_Flow*)
+* **Architecture Diagram**: Mermaid.js (`mermaid-diagram.png`)
 
 ---
 
 ## 📐 Architecture
+
+```bash
 [ Frontend (React) ]
 │
 ▼  (REST API Polling)
@@ -42,6 +59,7 @@
 │
 ▼  (Async HTTP)
 [ External ANT Server ]
+```
 
 ---
 
@@ -73,7 +91,44 @@ cd server/dist/ANT_Interface_System
 # 파일 실행
 # ANT_Interface_System.exe 실행 후 localhost:8000 페이지
 ```
+## 📸 Screenshots & Previews
 
+### 차량 현황 페이지
+* vehicle status 
+![main](image.png)
+
+### 미션 현황 페이지
+* mission list
+![mission](image-1.png)
+
+### 📋 PLC Communication & Event Log Viewer (PLC 로그 모니터링 화면)
+* **실시간 PLC-ANT 핸드셰이크(Handshake) 이벤트 트래킹**
+  * Modbus/TCP 통신을 통해 PLC 설비와 ANT 미들웨어 간에 주고받는 실시간 비트 신호 및 입출력 레지스터 데이터를 지속적으로 모니터링.
+
+* **상태별/이벤트별 로그 필터링 & 디버깅 지원**
+  * 정상 신호 교환, 미션 할당 이벤트, 통신 타임아웃, 예외 처리(Error) 등 로그 유형별 필터 기능 제공.
+  * 현장 설비 동작 중 발생하는 신호 꼬임이나 예외 상황 발생 시 신속한 원인 파악 및 이력 추적(Traceability) 용이.
+
+* **실시간 웹소켓(WebSocket) 및 폴링 기반 스트리밍**
+  * 설비 상태 변화 발생 시 화면 이탈 없이 실시간으로 로그가 갱신되는 스트리밍 뷰어 구현.
+![plc_log](image-2.png)
+
+### 🖥️ Real-time Map Viewer (실시간 맵 관제 화면)
+* **2D 벡터 지도 정밀 시각화 (SVG Canvas)**
+  * ANT 서버의 노드(Nodes) 및 링크(Links) 좌표 데이터를 수집하여 Web SVG 기반의 2D 맵으로 렌더링.
+  * 종횡비(Aspect Ratio) 자동 유지 및 Y축 반전 기하 연산을 적용하여 실제 물류 현장 맵 규격과 1:1 동기화.
+
+* **차량 실시간 폼 팩터(Body Shape) 폴리곤 렌더링**
+  * 단순 아이콘이 아닌 차량의 실제 물리적 규격 데이터(`state['body.shape']`) 기반 8각 다각형(Polygon) 렌더링.
+  * 차량의 진행 방향(Course/Heading Angle)을 라디안-디그리 연산으로 추적하여 실시간 회전 및 위치 추적 구현.
+
+* **실시간 주행 경로(Path) 하이라이트**
+  * 차량별 진행 예정 경로 노드 배열(`v.path`)을 점선 트랙으로 시각화하여 동선 교차 및 병목 구간 파악 용이.
+
+* **상태별 시각적 피드백 & 사용자 친화적 UI**
+  * 차량의 작동 상태(`operatingstate`)에 따른 상태별 컬러 매핑 (운행중: Green, 대기: Orange, 에러: Red).
+  * 반응형 캔버스(`ResizeObserver`)로 모니터링 해상도 자동 맞춤.
+![map](image-3.png)
 ## 📂 Project Structure
 
 ```bash
