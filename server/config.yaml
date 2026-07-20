@@ -1,0 +1,56 @@
+plc:
+  host: "localhost"
+  port: 502
+  poll_interval: 0.5 # polling interval in seconds
+
+
+ant_server:
+  host: "localhost"
+  port: 8081
+  username: "admin"
+  password: "123456"
+  mock: false
+
+  
+signal_map:
+  - mission_case: 0         # PLC → 써드 (입력: 트리거)
+    fromnode: "Pick_MAP"
+    tonode: "Drop_JIG_LH"
+    fromh1: 670
+    fromh2: 1250
+    toh1: 670
+    toh2: 1250
+
+  - mission_case: 1
+    fromnode: "Pick_MAP"
+    tonode: "Drop_JIG_RH"
+    fromh1: 670
+    fromh2: 1250
+    toh1: 670
+    toh2: 1250
+
+  - mission_case: 2
+    fromnode: "Pick_JIG_LH"
+    tonode: "Drop_MAP"
+    fromh1: 670
+    fromh2: 1250
+    toh1: 670
+    toh2: 1250
+
+  - mission_case: 3
+    fromnode: "Pick_JIG_RH"
+    tonode: "Drop_MAP"
+    fromh1: 670
+    fromh2: 1250
+    toh1: 670
+    toh2: 1250
+
+mission_ex1:
+  fromnode: "Pick_JIG_RH"
+  tonode: "Drop_JIG_LH"
+  fromh1: 670
+  fromh2: 1250
+  toh1: 670
+  toh2: 1250
+
+cancellation_trigger_node: '22'
