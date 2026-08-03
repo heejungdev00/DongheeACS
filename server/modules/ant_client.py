@@ -199,10 +199,6 @@ class AntClient(AntApiBase):
     
     # ── 차량 일시정지 ────────────────────
     async def pause_vehicle(self):
-        '''
-        진입 허가 시 노드 진입 
-        but 중간에 허가신호가 0으로 떨어지면 차량을 일시정지
-        '''
         body = {
             'command': {
                 'name': 'pause'

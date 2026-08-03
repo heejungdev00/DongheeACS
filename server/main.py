@@ -643,8 +643,8 @@ else:
             "api"    : "/docs"
         })
     
-# 배포시 main 실행
-if __name__ == "__main__":
-    logger.info("uvicorn 시작...")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# # 배포시 main 실행
+# if __name__ == "__main__":
+#     logger.info("uvicorn 시작...")
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
     
